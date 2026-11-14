@@ -30,3 +30,6 @@ Independent Qiskit and CUDA-Q GHZ statevector benchmarks. CUDA-Q uses the CPU si
 
 ## V4.0 — Hybrid algorithms
 PennyLane VQE compared to exact diagonalization, Qiskit QAOA on a synthetic four-asset portfolio compared to exhaustive enumeration, and PennyLane/PyTorch QML training compared to a classical cosine baseline. These are small simulator experiments, not investment advice or quantum advantage claims.
+
+## V5.0 — Distributed computing
+Ray local multi-process task scheduling complements MPI. Matrix rows are partitioned across tasks, with a shared operand in the object store. Benchmark one versus two CPU slots using `python -m benchmarks.distributed` after installing requirements-distributed.txt. Timings include dispatch and result collection, excluding startup and initial object placement. Multi-node validation remains pending.
