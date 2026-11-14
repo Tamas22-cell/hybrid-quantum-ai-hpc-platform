@@ -1,15 +1,24 @@
-name: CPU baseline CI
+name: HPC CPU and MPI CI
 on: [push, pull_request]
 permissions:
   contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install -r requirements.txt
-      - run: python -m unittest discover -s tests -v
+      - run: sudo apt-get update && sudo apt-get install -y openmpi-bin libopenmpi-dev
+      - run: pip install -r requirements-dev.txt
+      - run: python -m pytest -v
       - run: python -m cpu_engine --size 64 --repeats 3
+      - run: python benchmarks/mpi_scaling.py > mpi-results.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mpi-benchmark
+          path: mpi-results.json
