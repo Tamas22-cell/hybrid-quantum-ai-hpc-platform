@@ -16,10 +16,23 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y openmpi-bin libopenmpi-dev
       - run: pip install -r requirements-dev.txt
       - run: pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - run: pip install -r requirements-quantum.txt
       - run: python -m pytest -v
+      - run: python -m benchmarks.quantum
       - run: python -m cpu_engine --size 64 --repeats 3
       - run: python benchmarks/mpi_scaling.py > mpi-results.json
       - uses: actions/upload-artifact@v4
         with:
           name: mpi-benchmark
           path: mpi-results.json
+
+  cudaq:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-cudaq.txt pytest
+      - run: python -m pytest tests/test_quantum.py -v -k cudaq
+      - run: python -m benchmarks.quantum --backend cudaq
