@@ -9,10 +9,7 @@ services:
       - key: HPC_API_KEY
         sync: false
       - key: REDIS_URL
-        fromService:
-          type: keyvalue
-          name: hybrid-hpc-redis
-          property: connectionString
+        sync: false
   - type: worker
     name: hybrid-hpc-worker
     runtime: docker
@@ -21,15 +18,6 @@ services:
     dockerCommand: rq worker --url "$REDIS_URL"
     envVars:
       - key: REDIS_URL
-        fromService:
-          type: keyvalue
-          name: hybrid-hpc-redis
-          property: connectionString
+        sync: false
       - key: DATABASE_URL
         sync: false
-  - type: keyvalue
-    name: hybrid-hpc-redis
-    plan: free
-    region: frankfurt
-    ipAllowList: []
-    maxmemoryPolicy: noeviction
