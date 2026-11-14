@@ -66,20 +66,21 @@ jobs:
     timeout-minutes: 15
     env:
       POSTGRES_PASSWORD: ci-only-password
+      HPC_API_KEY: ci-only-key
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - run: pip install -r requirements-api.txt pytest
-      - run: python -m pytest tests/test_api.py -v
+      - run: python -m pytest tests/test_api.py tests/test_security.py -v
       - run: docker compose up -d --build --wait
       - run: |
           set -eu
           curl --retry 10 --retry-connrefused -fsS http://localhost:8000/health
-          id=$(curl -fsS -H 'Content-Type: application/json' -d '{"kind":"matrix","size":16}' http://localhost:8000/jobs | jq -r .id)
+          id=$(curl -fsS -H 'X-API-Key: ci-only-key' -H 'Content-Type: application/json' -d '{"kind":"matrix","size":16}' http://localhost:8000/jobs | jq -r .id)
           for i in $(seq 1 30); do
-            result=$(curl -fsS http://localhost:8000/jobs/$id)
+            result=$(curl -fsS -H 'X-API-Key: ci-only-key' http://localhost:8000/jobs/$id)
             if echo "$result" | jq -e '.status == "finished" and .result.selected == "cpu"'; then exit 0; fi
             sleep 2
           done
