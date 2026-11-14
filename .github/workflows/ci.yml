@@ -77,10 +77,10 @@ jobs:
       - run: docker compose up -d --build --wait
       - run: |
           set -eu
-          curl --retry 10 --retry-connrefused -fsS http://localhost:8000/health
-          id=$(curl -fsS -H 'X-API-Key: ci-only-key' -H 'Content-Type: application/json' -d '{"kind":"matrix","size":16}' http://localhost:8000/jobs | jq -r .id)
+          curl --retry 10 --retry-all-errors --retry-delay 2 --max-time 5 -fsS http://127.0.0.1:8000/health
+          id=$(curl -fsS -H 'X-API-Key: ci-only-key' -H 'Content-Type: application/json' -d '{"kind":"matrix","size":16}' http://127.0.0.1:8000/jobs | jq -r .id)
           for i in $(seq 1 30); do
-            result=$(curl -fsS -H 'X-API-Key: ci-only-key' http://localhost:8000/jobs/$id)
+            result=$(curl -fsS -H 'X-API-Key: ci-only-key' http://127.0.0.1:8000/jobs/$id)
             if echo "$result" | jq -e '.status == "finished" and .result.selected == "cpu"'; then exit 0; fi
             sleep 2
           done
