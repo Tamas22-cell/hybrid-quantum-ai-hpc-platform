@@ -2,6 +2,7 @@ import itertools
 import numpy as np
 from scipy.optimize import minimize
 from qiskit import QuantumCircuit
+from qiskit.circuit.library import DiagonalGate
 from qiskit.quantum_info import Statevector
 
 def solve():
@@ -14,7 +15,7 @@ def solve():
         gamma,beta = theta
         c = QuantumCircuit(4)
         c.h(range(4))
-        c.diagonal(np.exp(-1j*gamma*costs),range(4))
+        c.append(DiagonalGate(np.exp(-1j*gamma*costs)),range(4))
         for i in range(4):
             c.rx(2*beta,i)
         return Statevector.from_instruction(c).probabilities()
