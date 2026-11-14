@@ -1,0 +1,19 @@
+name: Security checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install bandit pip-audit
+      - run: bandit -r backend ai_agents scheduler -ll
+      - run: pip-audit -r requirements-api.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: cd frontend && npm install --no-audit && npm audit --audit-level=high
