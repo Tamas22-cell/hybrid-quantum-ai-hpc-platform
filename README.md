@@ -42,3 +42,6 @@ Qiskit level-3 transpilation compares circuit depth, gate count and state fideli
 
 ## V8.0 — Benchmark reporting
 Run `python -m benchmarks.suite` for repeated CPU and Qiskit measurements, or add `--gpu` on a CUDA host. Reports include JSON/CSV, environment metadata, median latency, p95 of run medians, reciprocal compute latency and optional cost estimated from a user-supplied hourly rate. GPU speedup compares identical matrix workloads only. MPI and Ray scaling remain separate benchmarks. Costs exclude idle time, billing granularity and transfer overhead; p95 is not a confidence interval.
+
+## V9.0 — Cloud infrastructure
+Local development: set POSTGRES_PASSWORD to a URL-safe secret and run `docker compose up --build`. The API binds to localhost:8000; `/docs` exposes OpenAPI. Submit a matrix or quantum job to `/jobs`, then poll `/jobs/{id}`. RQ processes jobs through Redis and stores successful results in PostgreSQL. The container supports CPU and Qiskit simulation. Kubernetes API deployment requires a prebuilt image, external Redis and a configured secret; worker deployment and live cluster validation are pending. Do not expose this unauthenticated development API publicly.
