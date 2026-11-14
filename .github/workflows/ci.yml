@@ -19,6 +19,11 @@ jobs:
       - run: pip install -r requirements-hybrid.txt
       - run: python -m pytest -v
       - run: python -m benchmarks.quantum
+      - run: python -m benchmarks.suite
+      - uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-report
+          path: benchmark-results/
       - run: python -m cpu_engine --size 64 --repeats 3
       - run: python benchmarks/mpi_scaling.py > mpi-results.json
       - uses: actions/upload-artifact@v4
