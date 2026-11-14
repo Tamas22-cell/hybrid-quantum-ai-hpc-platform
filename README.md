@@ -45,3 +45,6 @@ Run `python -m benchmarks.suite` for repeated CPU and Qiskit measurements, or ad
 
 ## V9.0 — Cloud infrastructure
 Local development: set POSTGRES_PASSWORD to a URL-safe secret and run `docker compose up --build`. The API binds to localhost:8000; `/docs` exposes OpenAPI. Submit a matrix or quantum job to `/jobs`, then poll `/jobs/{id}`. RQ processes jobs through Redis and stores successful results in PostgreSQL. The container supports CPU and Qiskit simulation. Kubernetes API deployment requires a prebuilt image, external Redis and a configured secret; worker deployment and live cluster validation are pending. Do not expose this unauthenticated development API publicly.
+
+## V10.0 — Control center
+Next.js dashboard in `frontend/`. Run `npm install` and `npm run dev` there with `HPC_API_URL=http://localhost:8000` set in the server environment. Vercel root directory is `frontend`; configure HPC_API_URL to an accessible secured backend before deployment. The dashboard supports CPU and quantum simulator submissions, polling and measured metrics. GPU and physical QPU execution are not exposed by the current backend. Public deployment must wait for authentication and rate limits in V11.
