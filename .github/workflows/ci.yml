@@ -36,3 +36,22 @@ jobs:
       - run: pip install -r requirements-cudaq.txt pytest
       - run: python -m pytest tests/test_quantum.py -v -k cudaq
       - run: python -m benchmarks.quantum --backend cudaq
+
+  distributed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-distributed.txt pytest
+      - run: python -m pytest tests/test_distributed.py -v
+      - run: python -m benchmarks.distributed > ray-results.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ray-benchmark
+          path: ray-results.json
