@@ -15,6 +15,7 @@ def benchmark(qubits=3, repeats=5, backend="qiskit"):
         simulate = lambda: np.asarray(Statevector.from_instruction(circuit).data)
     elif backend == "cudaq":
         import cudaq
+        cudaq.set_target('qpp-cpu')
         kernel = cudaq.make_kernel()
         q = kernel.qalloc(qubits)
         kernel.h(q[0])
