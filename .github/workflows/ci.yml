@@ -60,3 +60,29 @@ jobs:
         with:
           name: ray-benchmark
           path: ray-results.json
+
+  api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      POSTGRES_PASSWORD: ci-only-password
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-api.txt pytest
+      - run: python -m pytest tests/test_api.py -v
+      - run: docker compose up -d --build --wait
+      - run: |
+          set -eu
+          curl --retry 10 --retry-connrefused -fsS http://localhost:8000/health
+          id=$(curl -fsS -H 'Content-Type: application/json' -d '{"kind":"matrix","size":16}' http://localhost:8000/jobs | jq -r .id)
+          for i in $(seq 1 30); do
+            result=$(curl -fsS http://localhost:8000/jobs/$id)
+            if echo "$result" | jq -e '.status == "finished" and .result.selected == "cpu"'; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - if: always()
+        run: docker compose logs && docker compose down -v
