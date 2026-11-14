@@ -48,3 +48,6 @@ Local development: set POSTGRES_PASSWORD to a URL-safe secret and run `docker co
 
 ## V10.0 — Control center
 Next.js dashboard in `frontend/`. Run `npm install` and `npm run dev` there with `HPC_API_URL=http://localhost:8000` set in the server environment. Vercel root directory is `frontend`; configure HPC_API_URL to an accessible secured backend before deployment. The dashboard supports CPU and quantum simulator submissions, polling and measured metrics. GPU and physical QPU execution are not exposed by the current backend. Public deployment must wait for authentication and rate limits in V11.
+
+## V11.0 — Security and monitoring
+Configure HPC_API_KEY on the backend and server-side frontend. Job routes require X-API-Key; submissions are globally limited to ten per minute using Redis. Prometheus metrics are exposed at /metrics; sample scrape configuration and Grafana dashboard are under monitoring/. Keep metrics private. Security CI runs Bandit, pip-audit and npm audit. Shared service credentials are not individual user authentication: the frontend must remain private until user access controls are deployed. Never publish secrets.
