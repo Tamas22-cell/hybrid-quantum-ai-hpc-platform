@@ -15,6 +15,7 @@ jobs:
           python-version: '3.12'
       - run: sudo apt-get update && sudo apt-get install -y openmpi-bin libopenmpi-dev
       - run: pip install -r requirements-dev.txt
+      - run: pip install torch --index-url https://download.pytorch.org/whl/cpu
       - run: python -m pytest -v
       - run: python -m cpu_engine --size 64 --repeats 3
       - run: python benchmarks/mpi_scaling.py > mpi-results.json
