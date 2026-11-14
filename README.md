@@ -1,5 +1,9 @@
 # Hybrid Quantum–AI HPC Engineering Platform
 
+![Hybrid Quantum–AI HPC Platform concept](9b250591-06bd-4e27-b5af-feed80ea8597.png)
+
+*Concept visualization — illustrative metrics, not measured benchmark results.*
+
 [![CI](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/actions/workflows/ci.yml)
 
 Research platform for CPU, GPU and quantum workload orchestration.
