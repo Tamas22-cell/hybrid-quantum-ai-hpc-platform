@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hpc-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hpc-api
+  template:
+    metadata:
+      labels:
+        app: hpc-api
+    spec:
+      containers:
+        - name: api
+          image: hpc-api:local
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: hpc-config
+                  key: redis-url
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: "1", memory: 512Mi}
+          readinessProbe:
+            httpGet: {path: /health, port: 8000}
+          livenessProbe:
+            httpGet: {path: /health, port: 8000}
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hpc-api
+spec:
+  selector:
+    app: hpc-api
+  ports:
+    - port: 8000
+      targetPort: 8000
