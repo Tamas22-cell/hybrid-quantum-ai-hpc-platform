@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: hybrid-hpc-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    healthCheckPath: /health
+    envVars:
+      - key: HPC_API_KEY
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: hybrid-hpc-redis
+          property: connectionString
+  - type: worker
+    name: hybrid-hpc-worker
+    runtime: docker
+    plan: starter
+    region: frankfurt
+    dockerCommand: rq worker --url "$REDIS_URL"
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: hybrid-hpc-redis
+          property: connectionString
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hybrid-hpc-db
+          property: connectionString
+  - type: keyvalue
+    name: hybrid-hpc-redis
+    plan: free
+    region: frankfurt
+    ipAllowList: []
+    maxmemoryPolicy: noeviction
+databases:
+  - name: hybrid-hpc-db
+    plan: basic-256mb
+    region: frankfurt
+    ipAllowList: []
