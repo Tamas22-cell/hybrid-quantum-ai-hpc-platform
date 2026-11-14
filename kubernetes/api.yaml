@@ -24,6 +24,11 @@ spec:
                 secretKeyRef:
                   name: hpc-config
                   key: redis-url
+            - name: HPC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hpc-config
+                  key: api-key
           resources:
             requests: {cpu: 100m, memory: 128Mi}
             limits: {cpu: "1", memory: 512Mi}
