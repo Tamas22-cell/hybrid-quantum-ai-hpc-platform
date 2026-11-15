@@ -102,4 +102,5 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --no-audit --no-fund
+      - run: node --test tests/history-export.test.mjs
       - run: npm run build
