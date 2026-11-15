@@ -4,6 +4,10 @@ import subprocess
 import sys
 import pytest
 
+@pytest.mark.skipif(
+    sys.platform == "win32" and os.environ.get("HPC_RUN_MPI") != "1",
+    reason="Windows MPI integration is opt-in (HPC_RUN_MPI=1)",
+)
 @pytest.mark.parametrize("workers", [1, 2])
 def test_mpi_reference(workers):
     env = dict(os.environ, OPENBLAS_NUM_THREADS="1", OMP_NUM_THREADS="1")
