@@ -1,8 +1,8 @@
 # Hybrid Quantum–AI HPC Engineering Platform
 
-[![OPEN LIVE HPC PLATFORM](https://img.shields.io/badge/OPEN_LIVE_HPC_PLATFORM-2563eb?style=for-the-badge&logo=vercel&logoColor=white)](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app) [![VIEW RESEARCH RELEASE](https://img.shields.io/badge/VIEW_RESEARCH_RELEASE-24292f?style=for-the-badge&logo=github)](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/releases/tag/v12.0.0-rc.1)
+[![OPEN PUBLIC GITHUB PROJECT](https://img.shields.io/badge/OPEN_PUBLIC_GITHUB_PROJECT-24292f?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform) [![OPEN LIVE HPC DASHBOARD](https://img.shields.io/badge/OPEN_LIVE_HPC_DASHBOARD-2563eb?style=for-the-badge&logo=vercel&logoColor=white)](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app) [![VIEW RESEARCH RELEASE](https://img.shields.io/badge/VIEW_RESEARCH_RELEASE-475569?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/releases/tag/v12.0.0-rc.1)
 
-**Live dashboard:** operator login required. Public source code and benchmark evidence are available below.
+**For LinkedIn reviewers:** this repository is public. The live dashboard requires operator authentication; source code, architecture, benchmark evidence and research limits are documented below.
 
 ![Hybrid Quantum–AI HPC Platform concept](9b250591-06bd-4e27-b5af-feed80ea8597.png)
 
@@ -12,11 +12,13 @@
 
 Research platform for CPU, GPU and quantum workload orchestration.
 
-## Live platform
+## Project links
 
-[Open the deployed HPC dashboard](https://hybrid-quantum-ai-hpc-platform.vercel.app) · [Research release](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/releases/tag/v12.0.0-rc.1)
+- [Open the public GitHub repository](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform)
+- [Open the deployed HPC dashboard](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app) *(operator login required)*
+- [Read the V12 research release](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/releases/tag/v12.0.0-rc.1)
 
-The dashboard requires operator authentication. The public repository contains the implementation and reproducible benchmarks.
+The README is the public project overview. It links to the source, implementation notes, cloud validation and limitations.
 
 ### Cloud validation — November 15, 2026
 
