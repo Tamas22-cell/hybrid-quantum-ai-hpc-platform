@@ -10,8 +10,11 @@ services:
     environment:
       REDIS_URL: redis://redis:6379/0
       HPC_API_KEY: ${HPC_API_KEY:?set HPC_API_KEY}
+      DATABASE_URL: postgresql://hpc:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/hpc
     depends_on:
       redis:
+        condition: service_healthy
+      db:
         condition: service_healthy
   worker:
     build: .
