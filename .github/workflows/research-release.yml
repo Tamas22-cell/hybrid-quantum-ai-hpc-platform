@@ -1,0 +1,33 @@
+name: Publish research release
+on:
+  workflow_run:
+    workflows: ["HPC CPU and MPI CI"]
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  publish:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Verify matching security checks
+        run: |
+          for attempt in $(seq 1 20); do
+            result=$(gh api "repos/$GH_REPO/actions/runs?head_sha=$RELEASE_SHA&per_page=100" --jq '[.workflow_runs[] | select(.name == "Security checks" and .conclusion == "success")] | length')
+            if [ "$result" -gt 0 ]; then exit 0; fi
+            sleep 15
+          done
+          exit 1
+      - name: Publish research prerelease
+        run: |
+          if gh release view v12.0.0-rc.1 >/dev/null 2>&1; then exit 0; fi
+          gh release create v12.0.0-rc.1 --target "$RELEASE_SHA" --prerelease --title "V12 Research Release Candidate" --notes "CPU/MPI CI and security checks passed. Cloud CPU and Qiskit research platform. Browser end-to-end, cloud GPU, physical QPU and multi-node validation remain open."
