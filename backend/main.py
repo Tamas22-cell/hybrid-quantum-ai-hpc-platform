@@ -50,3 +50,16 @@ def status(job_id: str):
     except NoSuchJobError:
         raise HTTPException(404,"Job not found")
     return {"id":job.id,"status":job.get_status().value,"result":job.result}
+
+
+@app.get("/history", dependencies=[Depends(authorize)])
+def history():
+    import psycopg
+    try:
+        with psycopg.connect(os.environ["DATABASE_URL"], connect_timeout=5) as conn:
+            rows = conn.execute("SELECT id, payload FROM results ORDER BY id LIMIT 100").fetchall()
+        return {"items": [{"id": row[0], "payload": row[1]} for row in rows]}
+    except psycopg.errors.UndefinedTable:
+        return {"items": []}
+    except (psycopg.Error, KeyError):
+        raise HTTPException(503, "History unavailable") from None
