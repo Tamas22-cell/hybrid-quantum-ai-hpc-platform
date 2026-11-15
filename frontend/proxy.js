@@ -9,4 +9,4 @@ export function proxy(request){
  if(actual.length!==expected.length||!timingSafeEqual(actual,expected))return new NextResponse("Authentication required",{status:401,headers:{"WWW-Authenticate":'Basic realm="HPC Research", charset="UTF-8"',"Cache-Control":"no-store"}});
  return NextResponse.next();
 }
-export const config={matcher:["/((?!_next/static|_next/image|favicon.ico).*)"]};
+export const config={matcher:["/((?!_next/static|_next/image|favicon.ico|showcase).*)"]};
