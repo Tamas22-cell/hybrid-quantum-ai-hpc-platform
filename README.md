@@ -8,6 +8,21 @@
 
 Research platform for CPU, GPU and quantum workload orchestration.
 
+## Live platform
+
+[Open the deployed HPC dashboard](https://hybrid-quantum-ai-hpc-platform.vercel.app) · [Research release](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/releases/tag/v12.0.0-rc.1)
+
+The dashboard requires operator authentication. The public repository contains the implementation and reproducible benchmarks.
+
+### Cloud validation — November 15, 2026
+
+- CPU NumPy, 256 × 256 matrix: 0.735 ms median compute latency, 45.634 GFLOPS.
+- Qiskit GHZ simulator, 4 qubits: 0.241 ms median compute latency, fidelity approximately 1.
+- Dashboard submission, polling, persisted history, performance comparison and both export download dialogs verified in the live browser.
+- Docker API integration, security checks and four export serialization tests passed in CI.
+
+These are individual cloud benchmark results, not a CPU-versus-quantum speedup comparison. Physical QPU, cloud GPU and multi-node execution remain unvalidated. Exported local file contents were not independently inspected.
+
 ## V1.0 CPU baseline
 NumPy and MPI matrix multiplication with seeded inputs, reference validation, median latency, estimated GFLOPS, MPI speedup and efficiency.
 
