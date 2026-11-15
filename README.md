@@ -1,5 +1,9 @@
 # Hybrid Quantum–AI HPC Engineering Platform
 
+[![OPEN LIVE HPC PLATFORM](https://img.shields.io/badge/OPEN_LIVE_HPC_PLATFORM-2563eb?style=for-the-badge&logo=vercel&logoColor=white)](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app) [![VIEW RESEARCH RELEASE](https://img.shields.io/badge/VIEW_RESEARCH_RELEASE-24292f?style=for-the-badge&logo=github)](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/releases/tag/v12.0.0-rc.1)
+
+**Live dashboard:** operator login required. Public source code and benchmark evidence are available below.
+
 ![Hybrid Quantum–AI HPC Platform concept](9b250591-06bd-4e27-b5af-feed80ea8597.png)
 
 *Concept visualization — illustrative metrics, not measured benchmark results.*
