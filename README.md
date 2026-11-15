@@ -24,7 +24,7 @@ MPI timings include scatter, broadcast and gather; they exclude input generation
 ## Roadmap
 V1 CPU; V2 GPU; V3 quantum; V4 hybrid algorithms; V5 distributed computing; V6 AI orchestration; V7 compiler and error correction; V8 benchmarking; V9 cloud; V10 dashboard; V11 security and monitoring; V12 validated release.
 
-Current status: V1–V11 CI and security passed at commit cf92660; V12 research release candidate changes pending CI. Physical accelerator and production validation remain open.
+Current status: V12 cloud research release candidate. CPU and Qiskit workloads have persisted cloud results; physical QPU, cloud GPU and multi-node validation remain open.
 
 ## V2.0 — GPU acceleration
 PyTorch CUDA and optional CuPy float64 matrix multiplication; synchronized compute-only timings exclude host/device transfers. CPU reference validates numerical accuracy. Install requirements-gpu.txt with a CUDA-enabled PyTorch build or requirements-cupy.txt with a compatible CUDA 12 runtime. Run `python -m benchmarks.cpu_gpu --backend torch` on a GPU host. CPU CI exercises PyTorch CPU only; CUDA tests skip without hardware. No GPU speedup claimed until measured.
@@ -57,4 +57,8 @@ Next.js dashboard in `frontend/`. Run `npm install` and `npm run dev` there with
 Configure HPC_API_KEY on the backend and server-side frontend. Job routes require X-API-Key; submissions are globally limited to ten per minute using Redis. Prometheus metrics are exposed at /metrics; sample scrape configuration and Grafana dashboard are under monitoring/. Keep metrics private. Security CI runs Bandit, pip-audit and npm audit. Shared service credentials are not individual user authentication: V12 adds single-operator dashboard access; multi-user isolation remains pending. Never publish secrets.
 
 ## V12.0 — Research release candidate
-See [research protocol and validation gates](docs/RESEARCH_RELEASE.md) and [security guidance](SECURITY.md). Set HPC_UI_USER and HPC_UI_PASSWORD on the Next.js server alongside HPC_API_KEY and HPC_API_URL. Dashboard and proxy routes fail closed without credentials. Use HTTPS remotely. No live cloud deployment, physical GPU/QPU measurements or multi-user isolation are claimed. Release tag requires green CI on the final commit.
+See [research protocol and validation gates](docs/RESEARCH_RELEASE.md) and [security guidance](SECURITY.md). Set HPC_UI_USER and HPC_UI_PASSWORD on the Next.js server alongside HPC_API_KEY and HPC_API_URL. Dashboard and proxy routes fail closed without credentials. Use HTTPS remotely. Cloud deployment uses Vercel, Render API and RQ worker, Redis and Neon PostgreSQL. Local CUDA measurements are separate from cloud results. Physical QPU and multi-user isolation are not validated. Release tag requires green CI on the final commit.
+
+## Cloud architecture and validation
+
+Authenticated browser → Next.js server proxy → FastAPI → Redis/RQ → worker → PostgreSQL. The dashboard reads the latest 100 stored results via the API and exports CSV/JSON. Historical timestamps are unknown for pre-migration records. System status checks API, Redis, PostgreSQL and worker registration; registration alone does not prove execution health. Performance summaries group measured workloads by backend and size. Validate CPU and quantum submission, polling, persisted history, export and authentication before promoting a release. Cloud GPU/QPU and Ray multi-node execution remain optional research extensions.
