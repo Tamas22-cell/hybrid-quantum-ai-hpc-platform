@@ -57,8 +57,8 @@ def history():
     import psycopg
     try:
         with psycopg.connect(os.environ["DATABASE_URL"], connect_timeout=5) as conn:
-            rows = conn.execute("SELECT id, payload FROM results ORDER BY id LIMIT 100").fetchall()
-        return {"items": [{"id": row[0], "payload": row[1]} for row in rows]}
+            rows = conn.execute("SELECT id, payload, created_at FROM results ORDER BY created_at DESC NULLS LAST, id LIMIT 100").fetchall()
+        return {"items": [{"id": row[0], "payload": row[1], "created_at": row[2]} for row in rows]}
     except psycopg.errors.UndefinedTable:
         return {"items": []}
     except (psycopg.Error, KeyError):
