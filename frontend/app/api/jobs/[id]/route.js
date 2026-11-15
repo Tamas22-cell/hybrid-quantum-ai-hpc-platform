@@ -1,1 +1,6 @@
-export async function GET(req,{params}){const {id}=await params;const base=process.env.HPC_API_URL;if(!base)return Response.json({error:"Backend not configured"},{status:503});try{const r=await fetch(base+"/jobs/"+encodeURIComponent(id),{headers:{"X-API-Key":process.env.HPC_API_KEY||""},cache:"no-store"});return new Response(await r.text(),{status:r.status,headers:{"Content-Type":"application/json"}})}catch{return Response.json({error:"Backend unavailable"},{status:502})}}
+import { forwardJson } from "../../../../hpc-backend.js";
+
+export async function GET(request, { params }) {
+  const { id } = await params;
+  return forwardJson(`/jobs/${encodeURIComponent(id)}`, request);
+}

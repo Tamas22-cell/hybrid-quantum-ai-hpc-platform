@@ -78,15 +78,18 @@ jobs:
       - run: |
           set -eu
           curl --retry 10 --retry-all-errors --retry-delay 2 --max-time 5 -fsS http://127.0.0.1:8000/health
-          id=$(curl -fsS -H 'X-API-Key: ci-only-key' -H 'Content-Type: application/json' -d '{"kind":"matrix","size":16}' http://127.0.0.1:8000/jobs | jq -r .id)
+          auth=$(curl -fsS -H 'X-API-Key: ci-only-key' -H 'Content-Type: application/json' -d '{"email":"ci@example.test","password":"ci-only-long-password"}' http://127.0.0.1:8000/auth/register)
+          token=$(echo "$auth" | jq -r .session_token)
+          cookie="hpc_session=$token"
+          id=$(curl -fsS -H "Cookie: $cookie" -H 'Content-Type: application/json' -d '{"kind":"matrix","size":16}' http://127.0.0.1:8000/jobs | jq -r .id)
           for i in $(seq 1 30); do
-            result=$(curl -fsS -H 'X-API-Key: ci-only-key' http://127.0.0.1:8000/jobs/$id)
+            result=$(curl -fsS -H "Cookie: $cookie" http://127.0.0.1:8000/jobs/$id)
             if echo "$result" | jq -e '.status == "finished" and .result.selected == "cpu"'; then break; fi
             sleep 2
           done
           echo "$result" | jq -e '.status == "finished" and .result.selected == "cpu"'
-          curl -fsS -H 'X-API-Key: ci-only-key' http://127.0.0.1:8000/history | jq -e --arg id "$id" '.items | any(.id == $id and .created_at != null)'
-          curl -fsS -H 'X-API-Key: ci-only-key' http://127.0.0.1:8000/system-status | jq -e '.api == "online" and .redis == "online" and .database == "online" and .worker == "registered"'
+          curl -fsS -H "Cookie: $cookie" http://127.0.0.1:8000/history | jq -e --arg id "$id" '.items | any(.id == $id and .created_at != null)'
+          curl -fsS -H "Cookie: $cookie" http://127.0.0.1:8000/system-status | jq -e '.api == "online" and .redis == "online" and .database == "online" and .worker == "registered"'
           test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000/history)" = 401
       - if: always()
         run: docker compose logs && docker compose down -v

@@ -1,17 +1,16 @@
 import pytest
+
 pytest.importorskip("fastapi")
-from fastapi import HTTPException
-from backend.security import authorize
+from backend.security import hash_password, verify_password
 
-def test_auth(monkeypatch):
-    monkeypatch.setenv("HPC_API_KEY","test-secret")
-    authorize("test-secret")
-    with pytest.raises(HTTPException) as e:
-        authorize("invalid")
-    assert e.value.status_code==401
 
-def test_unconfigured(monkeypatch):
-    monkeypatch.delenv("HPC_API_KEY",raising=False)
-    with pytest.raises(HTTPException) as e:
-        authorize("")
-    assert e.value.status_code==503
+def test_password_hash_is_salted_and_verified():
+    first = hash_password("a-long-test-password")
+    second = hash_password("a-long-test-password")
+    assert first != second
+    assert verify_password("a-long-test-password", first)
+    assert not verify_password("wrong-password", first)
+
+
+def test_password_verifier_rejects_malformed_hash():
+    assert not verify_password("anything", "not-a-password-hash")

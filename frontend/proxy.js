@@ -1,12 +1,17 @@
-import {NextResponse} from "next/server";
-import {timingSafeEqual} from "node:crypto";
-export function proxy(request){
- const user=process.env.HPC_UI_USER;
- const password=process.env.HPC_UI_PASSWORD;
- if(!user||!password)return new NextResponse("Access not configured",{status:503});
- const expected=Buffer.from("Basic "+Buffer.from(user+":"+password).toString("base64"));
- const actual=Buffer.from(request.headers.get("authorization")||"");
- if(actual.length!==expected.length||!timingSafeEqual(actual,expected))return new NextResponse("Authentication required",{status:401,headers:{"WWW-Authenticate":'Basic realm="HPC Research", charset="UTF-8"',"Cache-Control":"no-store"}});
- return NextResponse.next();
+import { NextResponse } from "next/server";
+
+const publicPages = new Set(["/login", "/register"]);
+
+export function proxy(request) {
+  const { pathname } = request.nextUrl;
+  if (pathname.startsWith("/api/") || publicPages.has(pathname)) return NextResponse.next();
+  if (request.cookies.has("hpc_session")) return NextResponse.next();
+
+  const loginUrl = new URL("/login", request.url);
+  loginUrl.searchParams.set("next", pathname);
+  return NextResponse.redirect(loginUrl);
 }
-export const config={matcher:["/((?!_next/static|_next/image|favicon.ico).*)"]};
+
+export const config = {
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)"],
+};

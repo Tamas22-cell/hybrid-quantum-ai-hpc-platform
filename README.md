@@ -10,7 +10,7 @@
 
 **CPU computing · Quantum simulation · AI orchestration**
 
-Live dashboard requires operator authentication.
+Open registration is available. Each account sees only its own jobs and benchmark history.
 
 [![Hybrid Quantum–AI HPC Platform concept](9b250591-06bd-4e27-b5af-feed80ea8597.png)](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app)
 
@@ -25,7 +25,7 @@ Research platform for CPU, GPU and quantum workload orchestration.
 ## Project links
 
 - [Open the public GitHub repository](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform)
-- [Open the deployed HPC dashboard](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app) *(operator login required)*
+- [Open the deployed HPC dashboard](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app) *(public registration and login)*
 - [Read the V12 research release](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/releases/tag/v12.0.0-rc.1)
 
 The README is the public project overview. It links to the source, implementation notes, cloud validation and limitations.
@@ -79,17 +79,17 @@ Qiskit level-3 transpilation compares circuit depth, gate count and state fideli
 Run `python -m benchmarks.suite` for repeated CPU and Qiskit measurements, or add `--gpu` on a CUDA host. Reports include JSON/CSV, environment metadata, median latency, p95 of run medians, reciprocal compute latency and optional cost estimated from a user-supplied hourly rate. GPU speedup compares identical matrix workloads only. MPI and Ray scaling remain separate benchmarks. Costs exclude idle time, billing granularity and transfer overhead; p95 is not a confidence interval.
 
 ## V9.0 — Cloud infrastructure
-Local development: set HPC_API_KEY and POSTGRES_PASSWORD to strong URL-safe secrets and run `docker compose up --build`. The API binds to localhost:8000; `/docs` exposes OpenAPI. Submit a matrix or quantum job to `/jobs`, then poll `/jobs/{id}`. RQ processes jobs through Redis and stores successful results in PostgreSQL. The container supports CPU and Qiskit simulation. Kubernetes API deployment requires a prebuilt image, external Redis and a configured secret; worker deployment and live cluster validation are pending. Keep the development API private.
+Local development: set `HPC_API_KEY` and `POSTGRES_PASSWORD`, then run `docker compose up --build`. The API binds to localhost:8000; `/docs` exposes OpenAPI. Register through the frontend (which keeps the API key server-side), then submit a matrix or quantum job using the returned session cookie. RQ processes jobs through Redis and stores successful results in PostgreSQL. The container supports CPU and Qiskit simulation. Kubernetes API deployment requires a prebuilt image and external Redis; worker deployment and live cluster validation are pending. Keep the development API private.
 
 ## V10.0 — Control center
-Next.js dashboard in `frontend/`. Run `npm install` and `npm run dev` there with `HPC_API_URL=http://localhost:8000` set in the server environment. Vercel root directory is `frontend`; configure HPC_API_URL to an accessible secured backend before deployment. The dashboard supports CPU and quantum simulator submissions, polling and measured metrics. GPU and physical QPU execution are not exposed by the current backend. Remote deployment requires HTTPS and dashboard authentication.
+Next.js dashboard in `frontend/`. Run `npm install` and `npm run dev` there with `HPC_API_URL=http://localhost:8000` and `HPC_API_KEY` set in the server environment. Vercel root directory is `frontend`; configure both server-side variables to reach the backend and keep its registration/login endpoints private. The dashboard supports public registration, login, secure sessions, CPU and quantum simulator submissions, polling and measured metrics. GPU and physical QPU execution are not exposed by the current backend. Remote deployment uses HTTPS.
 
 ## V11.0 — Security and monitoring
-Configure HPC_API_KEY on the backend and server-side frontend. Job routes require X-API-Key; submissions are globally limited to ten per minute using Redis. Prometheus metrics are exposed at /metrics; sample scrape configuration and Grafana dashboard are under monitoring/. Keep metrics private. Security CI runs Bandit, pip-audit and npm audit. Shared service credentials are not individual user authentication: V12 adds single-operator dashboard access; multi-user isolation remains pending. Never publish secrets.
+Passwords are stored as salted scrypt hashes. Session tokens are opaque, stored only as hashes in Neon, and sent to the browser in `HttpOnly`, `Secure` (production), `SameSite=Lax` cookies with a seven-day expiry. Redis limits registration/login attempts by client and workload submissions per user. Every queued job carries its owner's ID; status and history endpoints enforce that owner. Legacy results without an owner are hidden from user accounts. Prometheus metrics are exposed at `/metrics`; keep backend service details private. Security CI runs Bandit, pip-audit and npm audit. Registration does not require a paid email service; email confirmation and password reset are not currently provided. Never publish secrets.
 
 ## V12.0 — Research release candidate
-See [research protocol and validation gates](docs/RESEARCH_RELEASE.md) and [security guidance](SECURITY.md). Set HPC_UI_USER and HPC_UI_PASSWORD on the Next.js server alongside HPC_API_KEY and HPC_API_URL. Dashboard and proxy routes fail closed without credentials. Use HTTPS remotely. Cloud deployment uses Vercel, Render API and RQ worker, Redis and Neon PostgreSQL. Local CUDA measurements are separate from cloud results. Physical QPU and multi-user isolation are not validated. Release tag requires green CI on the final commit.
+See [research protocol and validation gates](docs/RESEARCH_RELEASE.md) and [security guidance](SECURITY.md). Set `HPC_API_URL` and `HPC_API_KEY` on the Next.js server; set `HPC_API_KEY`, `DATABASE_URL` and `REDIS_URL` on the Render API, and `DATABASE_URL` plus `REDIS_URL` on the worker. The browser-facing Vercel deployment is public; account creation and session checks protect user workloads. Cloud deployment uses the existing Vercel, Render API and RQ worker, Redis and Neon PostgreSQL services. Local CUDA measurements are separate from cloud results. Physical QPU execution remains unvalidated. Release tag requires green CI on the final commit.
 
 ## Cloud architecture and validation
 
-Authenticated browser → Next.js server proxy → FastAPI → Redis/RQ → worker → PostgreSQL. The dashboard reads the latest 100 stored results via the API and exports CSV/JSON. Historical timestamps are unknown for pre-migration records. System status checks API, Redis, PostgreSQL and worker registration; registration alone does not prove execution health. Performance summaries group measured workloads by backend and size. Validate CPU and quantum submission, polling, persisted history, export and authentication before promoting a release. Cloud GPU/QPU and Ray multi-node execution remain optional research extensions.
+Browser → public Next.js login/registration → HttpOnly session cookie → FastAPI session validation → Redis/RQ → owner-tagged worker job → per-user PostgreSQL history. The dashboard reads up to 100 results for the signed-in user and exports CSV/JSON. Older unowned results are not exposed. System status checks API, Redis, PostgreSQL and worker registration; registration alone does not prove execution health. Performance summaries group measured workloads by backend and size. Cloud GPU/QPU and Ray multi-node execution remain optional research extensions.
