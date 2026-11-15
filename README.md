@@ -1,12 +1,22 @@
 # Hybrid Quantum–AI HPC Engineering Platform
 
-[![OPEN PUBLIC GITHUB PROJECT](https://img.shields.io/badge/OPEN_PUBLIC_GITHUB_PROJECT-24292f?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform) [![OPEN LIVE HPC DASHBOARD](https://img.shields.io/badge/OPEN_LIVE_HPC_DASHBOARD-2563eb?style=for-the-badge&logo=vercel&logoColor=white)](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app) [![VIEW RESEARCH RELEASE](https://img.shields.io/badge/VIEW_RESEARCH_RELEASE-475569?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/releases/tag/v12.0.0-rc.1)
+<div align="center">
 
-**For LinkedIn reviewers:** this repository is public. The live dashboard requires operator authentication; source code, architecture, benchmark evidence and research limits are documented below.
+## 🚀 LIVE HPC PLATFORM
 
-![Hybrid Quantum–AI HPC Platform concept](9b250591-06bd-4e27-b5af-feed80ea8597.png)
+### [▶ LAUNCH THE HPC DASHBOARD](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app)
 
-*Concept visualization — illustrative metrics, not measured benchmark results.*
+[![LAUNCH HPC PLATFORM](https://img.shields.io/badge/LAUNCH%20HPC%20PLATFORM-OPEN%20DASHBOARD-0078D4?style=for-the-badge&logo=vercel&logoColor=white)](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app)
+
+**CPU computing · Quantum simulation · AI orchestration**
+
+Live dashboard requires operator authentication.
+
+[![Hybrid Quantum–AI HPC Platform concept](9b250591-06bd-4e27-b5af-feed80ea8597.png)](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app)
+
+*Click the image or the launch button to open the platform. Concept visualization — illustrative metrics, not measured benchmark results.*
+
+</div>
 
 [![CI](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/actions/workflows/ci.yml)
 
