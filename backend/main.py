@@ -7,6 +7,7 @@ from backend.security import authorize, limit
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel, Field
 from redis import Redis
+from redis.exceptions import RedisError
 from rq import Queue
 from rq.job import Job
 from rq.exceptions import NoSuchJobError
@@ -75,7 +76,7 @@ def system_status():
         if redis.ping():
             checks["redis"] = "online"
             checks["worker"] = "registered" if Worker.count(connection=redis) else "not registered"
-    except (Exception):
+    except (RedisError, KeyError, ValueError):
         pass
     try:
         with psycopg.connect(os.environ["DATABASE_URL"], connect_timeout=3) as conn:
