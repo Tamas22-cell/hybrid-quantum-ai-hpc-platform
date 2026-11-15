@@ -63,3 +63,24 @@ def history():
         return {"items": []}
     except (psycopg.Error, KeyError):
         raise HTTPException(503, "History unavailable") from None
+
+
+@app.get("/system-status", dependencies=[Depends(authorize)])
+def system_status():
+    import psycopg
+    from rq import Worker
+    checks = {"api": "online", "redis": "unavailable", "database": "unavailable", "worker": "unknown"}
+    try:
+        redis = Redis.from_url(os.environ["REDIS_URL"], socket_connect_timeout=3, socket_timeout=3)
+        if redis.ping():
+            checks["redis"] = "online"
+            checks["worker"] = "registered" if Worker.count(connection=redis) else "not registered"
+    except (Exception):
+        pass
+    try:
+        with psycopg.connect(os.environ["DATABASE_URL"], connect_timeout=3) as conn:
+            conn.execute("SELECT 1").fetchone()
+        checks["database"] = "online"
+    except (psycopg.Error, KeyError):
+        pass
+    return checks
