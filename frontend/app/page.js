@@ -1,5 +1,6 @@
 "use client";
 import {useState,useEffect} from "react";
+import {serializeHistory} from "./history-export.mjs";
 export default function Dashboard(){
  const [kind,K]=useState("matrix"),[size,S]=useState(256),[id,I]=useState(""),[job,J]=useState(null),[error,E]=useState(""),[busy,B]=useState(false);
  async function submit(e){e.preventDefault();B(true);E("");I("");J(null);try{const r=await fetch("/api/jobs",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({kind,size})});if(!r.ok)throw Error("Job submission failed: "+r.status);I((await r.json()).id)}catch(e){E(e.message)}finally{B(false)}}
@@ -11,9 +12,7 @@ export default function Dashboard(){
  async function refreshSystem(){try{SE("");const r=await fetch("/api/system-status",{cache:"no-store"});if(!r.ok)throw Error("Status unavailable: "+r.status);SS(await r.json())}catch(e){SS(null);SE(e.message)}}
  useEffect(()=>{refreshSystem()},[]);
  function downloadHistory(format){
- const columns=["id","created_at","backend","size","qubits","median_seconds","gflops","fidelity"];
- const rows=history.map(x=>({id:x.id,created_at:x.created_at,...x.payload.result}));
- const data=format==="json"?JSON.stringify(history,null,2):[columns.join(","),...rows.map(x=>columns.map(k=>JSON.stringify(String(x[k]??""))).join(","))].join("\n");
+ const data=serializeHistory(history,format);
  const url=URL.createObjectURL(new Blob([data],{type:format==="json"?"application/json":"text/csv"}));const a=document.createElement("a");a.href=url;a.download="benchmark-history."+format;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
  }
  const result=job?.result?.result;const latency=result?.median_seconds;
