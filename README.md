@@ -28,6 +28,15 @@ Research platform for CPU, GPU and quantum workload orchestration.
 - [Open the deployed HPC dashboard](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app) *(public registration and login)*
 - [Read the V12 research release](https://github.com/Tamas22-cell/hybrid-quantum-ai-hpc-platform/releases/tag/v12.0.0-rc.1)
 
+## Try the live platform
+
+1. Open the [HPC dashboard](https://hybrid-quantum-ai-hpc-platform-tamas-quantum-lab.vercel.app).
+2. Create an account using **Register**, then sign in. Registration and login protect each user's jobs and benchmark history. Email confirmation and password reset are not currently provided.
+3. Submit a CPU matrix job or a Qiskit simulator job, then follow its status in the dashboard.
+4. Review the measured result and saved history; use the CSV or JSON export options when needed.
+
+**Scope:** the deployed backend supports CPU and quantum simulation. GPU and physical QPU execution are not exposed by the current backend; cloud GPU and multi-node results are not validated.
+
 The README is the public project overview. It links to the source, implementation notes, cloud validation and limitations.
 
 ### Cloud validation — November 15, 2026
